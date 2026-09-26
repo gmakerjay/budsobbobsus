@@ -412,6 +412,167 @@ export function QuestionDiagram({ type, data }) {
       );
 
     default:
-      return null;
+      return renderUniversalFallback(type, data);
   }
+}
+
+function getDiagramTitle(type) {
+  const titles = {
+    ai_ecosystem: "แผนผังระบบนิเวศและสถาปัตยกรรมปัญญาประดิษฐ์ (AI & LLM Architecture)",
+    phishing_model: "วงจรการโจมตีและการตรวจจับฟิชชิ่ง (Phishing Attack Lifecycle)",
+    mfa_factors: "โมเดลการยืนยันตัวตนแบบหลายปัจจัย 3 มิติ (MFA 3 Factors)",
+    pdpa_categories: "ผังจำแนกประเภทข้อมูลส่วนบุคคลตาม พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล (PDPA)",
+    cloud_layers: "พีระมิดระดับชั้นการให้บริการ Cloud Computing (IaaS / PaaS / SaaS)",
+    osi_layers: "ผังโครงสร้างแบบจำลองเครือข่าย 7 ระดับชั้น (OSI 7 Layers Model)",
+    backup_rule: "กฎมาตรฐานการสำรองข้อมูลปลอดภัยระดับสากล (3-2-1 Backup Strategy)",
+    vlookup_param: "โครงสร้างพารามิเตอร์และการทำงานของฟังก์ชัน VLOOKUP",
+    database_keys: "ผังจำแนกประเภทคีย์ในฐานข้อมูลเชิงสัมพันธ์ (Database Keys)",
+    cia_triad: "สามเหลี่ยมความมั่นคงปลอดภัยสารสนเทศ (CIA Triad Architecture)",
+    wifi_security: "วิวัฒนาการโปรโตคอลความปลอดภัยเครือข่ายไร้สาย (Wi-Fi Security Protocols)",
+    cpu_arch: "ผังการทำงานภายในหน่วยประมวลผลกลาง (CPU Execution Pipeline)",
+    destroy_committee: "ขั้นตอนและองค์ประกอบคณะกรรมการทำลายหนังสือราชการ",
+    doc_numbering: "โครงสร้างและรหัสการออกเลขที่หนังสือราชการ",
+    archives_timeline: "วงจรอายุและการส่งมอบหนังสือราชการไปยังหอจดหมายเหตุแห่งชาติ",
+    receipt_stamp: "ผังการลงตราประทับรับ-ส่งหนังสือราชการและจุดวางตรา",
+    e_saraban: "มาตรฐานและองค์ประกอบของระบบสารบรรณอิเล็กทรอนิกส์ (e-Saraban)",
+    police_doc_prefix: "รหัสตัวพยัญชนะและเลขประจำตัวส่วนราชการในสังกัดสำนักงานตำรวจแห่งชาติ (ตร.)",
+    good_governance: "เสาหลักและเป้าหมายการบริหารกิจการบ้านเมืองที่ดี (Good Governance)",
+    loan_contract: "เกณฑ์กฎหมายหลักฐานการกู้ยืมเงินและดอกเบี้ยตาม ป.พ.พ.",
+    statute_limitations: "ตารางกำหนดอายุความในคดีแพ่งและอาญาที่สำคัญ",
+    procurement_methods: "ผังจำแนกวิธีจัดซื้อจัดจ้างตาม พ.ร.บ.การจัดซื้อจัดจ้างฯ พ.ศ. 2560",
+    procurement_pillars: "4 เสาหลักแห่งความคุ้มค่า โปร่งใส และมีประสิทธิภาพ",
+    criminal_penalties: "ลำดับขั้นโทษทางอาญา 5 สถานตามประมวลกฎหมายอาญา มาตรา 18",
+    robbery_gang: "ผังองค์ประกอบความผิดฐานชิงทรัพย์และปล้นทรัพย์",
+    extortion_blackmail: "ตารางเปรียบเทียบความผิดฐานกรรโชกทรัพย์ vs รีดเอาทรัพย์",
+    void_vs_voidable: "เปรียบเทียบผลทางกฎหมาย: โมฆะกรรม (Void) vs โมฆียกรรม (Voidable)",
+    police_discipline: "ระบบโทษทางวินัยข้าราชการตำรวจ 5 สถานตาม พ.ร.บ.ตำรวจแห่งชาติ พ.ศ. 2565",
+    admin_appeal: "ขั้นตอนและระยะเวลาการอุทธรณ์คำสั่งทางปกครอง",
+    ratio_chain: "ผังวิเคราะห์อัตราส่วนต่อเนื่องและตัวแปรเชื่อมโยง (Ratio Chain Analysis)",
+    profit_share: "สูตรและสัดส่วนการแบ่งกำไรตามเงินลงทุนและระยะเวลา",
+    pct_ratio: "ผังแปลงร้อยละ อัตราส่วน และฐานตัวเลข",
+    markup_discount: "ผังวงจรราคาทุน ราคาป้าย และกำไรสุทธิหลังลดราคา",
+    weighted_avg: "สูตรค่าเฉลี่ยถ่วงน้ำหนัก (Weighted Average Formula)",
+    tree_interval: "สูตรคำนวณจำนวนเสาไฟ ต้นไม้ และระยะห่างช่วง",
+    handshake_round: "สูตรการจับมือและการแข่งขันแบบพบกันหมด Combination C(n,2)",
+    clock_angle: "สูตรคำนวณมุมระหว่างเข็มสั้นและเข็มยาวบนหน้าปัดนาฬิกา",
+    conjunction_types: "ผังจำแนกคำเชื่อมและโครงสร้างสัมพันธสารภาษาไทย",
+    royal_body: "ผังคำราชาศัพท์หมวดร่างกายและอวัยวะสำคัญ",
+    polite_words: "ตารางเทียบเคียงคำสุภาพตามหลักภาษาไทย",
+    foreign_syntax: "เปรียบเทียบสำนวนภาษาต่างประเทศ (สำนวนแปล) vs สำนวนภาษาไทยแท้",
+    tense_timeline: "เส้นเวลาและโครงสร้าง Tense ในภาษาอังกฤษ (English Tense Timeline)",
+    vocab_synonym: "ตารางคำศัพท์ ความหมายเหมือน (Synonym) และความหมายตรงข้าม (Antonym)",
+    prepositions_time: "ผังการใช้บุพบทบอกเวลาและสถานที่ (Prepositions: In / On / At)",
+    new_theory_land: "ผังการจัดสรรพื้นที่ตามหลักเกษตรทฤษฎีใหม่ (อัตราส่วน 30:30:30:10)",
+    asean_members: "ผังโครงสร้างประเทศสมาชิกประชาคมอาเซียน (ASEAN Member States)"
+  };
+  return titles[type] || `แผนผังมโนทัศน์เชิงวิเคราะห์: ${type ? type.replace(/_/g, ' ') : 'หลักการสำคัญ'}`;
+}
+
+function renderUniversalFallback(type, data) {
+  if (!data) return null;
+
+  const title = getDiagramTitle(type);
+
+  // 1. Steps / Stages / Pipeline
+  const stepsList = data.stages || data.steps || data.flow || data.lifecycle || (Array.isArray(data) ? data : null);
+  const isPipeline = Array.isArray(stepsList) && stepsList.length > 0;
+
+  // 2. Comparison (typeA/typeB, pros/cons, correct/wrong, formal/informal, etc.)
+  const compLeft = data.typeA || data.pros || data.correct || data.formal || data.past || data.foreign || data.sideA || data.public;
+  const compRight = data.typeB || data.cons || data.wrong || data.informal || data.present || data.thai || data.sideB || data.private;
+  const hasComparison = compLeft !== undefined && compRight !== undefined;
+
+  // 3. Formula
+  const hasFormula = Boolean(data.formula || data.equation || data.rule);
+
+  // 4. Pillars / items / levels / hierarchy
+  const itemsList = data.pillars || data.items || data.levels || data.factors || data.virtues || data.hierarchy;
+  const hasItemsList = Array.isArray(itemsList) && itemsList.length > 0;
+
+  // 5. General key-value entries (excluding already handled keys)
+  const handledKeys = new Set(['stages', 'steps', 'flow', 'lifecycle', 'typeA', 'typeB', 'pros', 'cons', 'correct', 'wrong', 'formal', 'informal', 'past', 'present', 'foreign', 'thai', 'sideA', 'sideB', 'public', 'private', 'formula', 'equation', 'rule', 'pillars', 'items', 'levels', 'factors', 'virtues', 'hierarchy']);
+  const remainingEntries = Object.entries(data).filter(([k]) => !handledKeys.has(k) && typeof data[k] !== 'object');
+
+  return (
+    <div className="diagram-box">
+      <div className="diagram-header">
+        <span className="diagram-title">{title}</span>
+      </div>
+
+      <div className="universal-diagram-wrap">
+        {hasFormula && (
+          <div className="universal-formula-bar">
+            <span className="universal-formula-code">{data.formula || data.equation || data.rule}</span>
+            {(data.solution || data.target || data.result) && (
+              <span className="universal-formula-badge">
+                ผลลัพธ์: {data.solution || data.target || data.result}
+              </span>
+            )}
+          </div>
+        )}
+
+        {isPipeline && (
+          <div className="universal-flow-wrap">
+            {stepsList.map((step, idx) => (
+              <div key={idx} className="universal-flow-step">
+                <div className="universal-step-bubble">
+                  {typeof step === 'string' ? step : step.name || step.stage || JSON.stringify(step)}
+                </div>
+                {idx < stepsList.length - 1 && (
+                  <ArrowRight size={16} className="universal-flow-arrow" />
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {hasComparison && (
+          <div className="universal-compare-wrap">
+            <div className="universal-compare-col positive">
+              <div className="universal-col-title">
+                {data.typeA?.name || 'กรณีที่ 1 / ฝั่งมาตรฐาน'}
+              </div>
+              <div className="universal-col-content">
+                {typeof compLeft === 'object' ? Object.entries(compLeft).map(([k, v]) => `${k}: ${v}`).join(' | ') : String(compLeft)}
+              </div>
+            </div>
+            <div className="universal-compare-col negative">
+              <div className="universal-col-title">
+                {data.typeB?.name || 'กรณีที่ 2 / ฝั่งเปรียบเทียบ'}
+              </div>
+              <div className="universal-col-content">
+                {typeof compRight === 'object' ? Object.entries(compRight).map(([k, v]) => `${k}: ${v}`).join(' | ') : String(compRight)}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {hasItemsList && (
+          <div className="universal-cards-grid">
+            {itemsList.map((it, idx) => (
+              <div key={idx} className="universal-card-item">
+                <div className="universal-card-key">
+                  {typeof it === 'object' ? (it.stage || it.level || it.code || it.name || `ข้อที่ ${idx + 1}`) : `รายการที่ ${idx + 1}`}
+                </div>
+                <div className="universal-card-val">
+                  {typeof it === 'object' ? (it.th || it.focus || it.action || it.detail || it.formula || it.penalty || JSON.stringify(it)) : String(it)}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {remainingEntries.length > 0 && !hasItemsList && (
+          <div className="universal-cards-grid">
+            {remainingEntries.map(([key, val], idx) => (
+              <div key={idx} className="universal-card-item">
+                <div className="universal-card-key">{key}</div>
+                <div className="universal-card-val">{String(val)}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
