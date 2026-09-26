@@ -12,7 +12,8 @@ import {
   Filter, 
   RotateCcw,
   BookOpen,
-  Award
+  Award,
+  MoveHorizontal
 } from 'lucide-react';
 import { QUESTIONS } from '../data/questionsData';
 import { SUBJECTS } from '../data/curriculumData';
@@ -138,7 +139,14 @@ export function PracticeExamView() {
           </div>
         </div>
 
-        {/* สารบัญข้อคำถาม (Question Palette) */}
+        {/* สารบัญข้อคำถาม (Question Palette) พร้อมจุดบอกสไลด์ */}
+        <div className="palette-header-row">
+          <span className="palette-title">สารบัญข้อคำถาม ({filteredQuestions.length} ข้อ)</span>
+          <span className="palette-slide-hint">
+            <MoveHorizontal size={13} className="slider-icon-pulse" />
+            <span>สไลด์เลื่อนดูข้อ 1 - {filteredQuestions.length}</span>
+          </span>
+        </div>
         <div className="question-palette">
           {filteredQuestions.map((q, idx) => {
             const answered = userAnswers[q.id] !== undefined;
